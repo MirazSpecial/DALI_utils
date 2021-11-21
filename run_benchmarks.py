@@ -6,15 +6,15 @@ import sys
 our_benchmarks = [
     'CastGPU',
     'CoinFlipGPU',
-    'ColorTwistGPU',  # Duplicate
+    'ColorTwistGPU',
     'CopyGPU',
-    'CropMirrorNormalizeX',  # Duplicate
+    'CropMirrorNormalizeX',
     'FlipGPU',
     'GaussianBlurGPU',
     'MaxGPU',
     'MinGPU',
-    'NormalDistributionX',  # Duplicate
-    'NormalDistribution_NonUniform',  # Duplicate
+    'NormalDistributionX',
+    'NormalDistribution_NonUniform',
     'OneHotGPU',
     'ShapesGPU',
     'ReshapeGPU',
@@ -24,14 +24,15 @@ our_benchmarks = [
     'UniformGPU',  # There are some problems with that
 ]
 
-if len(sys.argv) == 1:  # Zero arguments run all benchmarks
-    for bench in our_benchmarks:
-        os.system(f'/home/public/benchmark.sh /home/public/benchmarks/results/{bench}_result.json json OperatorBench/{bench}')
-
 for bench in sys.argv[1:]:
     if bench not in our_benchmarks:
         print(f'Unrecognized benchmark name: {bench}')
         exit(1)
 
-for bench in sys.argv[1:]:
-    os.system(f'/home/public/benchmark.sh /home/public/benchmarks/results/{bench}_result.json json OperatorBench/{bench}')
+benchmarks = our_benchmarks if len(sys.argv) == 1 else sys.argv[1:]
+for bench in benchmarks:
+    os.system(f'./build/dali/python/nvidia/dali/test/dali_benchmark.bin '
+              f'--benchmark_out=/home/public/benchmarks/results/{bench}_result.json '
+              f'--benchmark_out_format=json '
+              f'--benchmark_filter=OperatorBench/{bench}')
+
